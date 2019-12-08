@@ -30,6 +30,7 @@ public:
 public:
 	void forward(shared_ptr<XscChannel> clientChannel , shared_ptr<XmsgClient> client , shared_ptr<XscProtoPdu> pdu); 
 	void receive(shared_ptr<XscProtoPdu> pdu); 
+	void evnDisc(); 
 	XmsgNeUsrAp(const string& neg, const string& cgt, shared_ptr<XscChannel> channel, const string& prefix);
 	virtual ~XmsgNeUsrAp();
 private:

@@ -18,6 +18,7 @@
  */
 
 #include "XmsgNeUsrAp.h"
+#include "XmsgNeUsrMgrAp.h"
 #include "../XmsgApCfg.h"
 #include "../usr/XmsgClientMgr.h"
 
@@ -82,6 +83,17 @@ void XmsgNeUsrAp::receiveOnClientThread(SptrClient client, shared_ptr<XscProtoPd
 		bool exp;
 		auto p = XscProtoPdu::decode(dat, len, &exp);
 		LOG_RECORD("\n  --> PEER: %s CFD: %d NE: %s\n%s\n", client->channel->peer.c_str(), client->channel->cfd, client->cgt.c_str(), p == nullptr ? "exception" : p->print(dat, len).c_str())
+	}
+}
+
+void XmsgNeUsrAp::evnDisc()
+{
+	LOG_ERROR("%s channel lost, this: %s", this->neg.c_str(), this->toString().c_str())
+	auto u = XmsgNeUsrMgrAp::instance()->remove(this->neg);
+	if (u == nullptr)
+	{
+		LOG_FAULT("it`s a bug, neg: %s, this: %s", this->neg.c_str(), this->toString().c_str())
+		return;
 	}
 }
 
