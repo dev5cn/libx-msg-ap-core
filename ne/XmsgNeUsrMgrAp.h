@@ -46,10 +46,10 @@ public:
 	unordered_map<string , shared_ptr<XmsgNeUsrAp>> nes; 
 	unordered_map<string , shared_ptr<XmsgNeUsrAp>> subClientEstbEventGroup; 
 	unordered_map<string , shared_ptr<XmsgNeUsrAp>> subClientDiscEventGroup; 
-	unordered_map<string , shared_ptr<XmsgNeUsrAp>> prefixGroup; 
+	unordered_map<string , string > msgName4neg; 
 	mutex lock4nes; 
 	mutex lock4sub; 
-	mutex lock4prefix; 
+	mutex lock4msgName4neg; 
 private:
 	static XmsgNeUsrMgrAp* inst;
 	XmsgNeUsrMgrAp();

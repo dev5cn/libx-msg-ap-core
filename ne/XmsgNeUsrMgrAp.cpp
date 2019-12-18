@@ -143,28 +143,30 @@ void XmsgNeUsrMgrAp::getSubClientDiscEventGroup(list<shared_ptr<XmsgNeUsrAp>>& l
 
 shared_ptr<XmsgNeUsrAp> XmsgNeUsrMgrAp::findByMsgName(const string& msg)
 {
-	unique_lock<mutex> lock0(this->lock4prefix);
-	auto it = this->prefixGroup.find(msg);
-	if (it != this->prefixGroup.end())
-		return it->second;
+	string neg;
+	unique_lock<mutex> lock0(this->lock4msgName4neg);
+	auto it = this->msgName4neg.find(msg);
+	if (it != this->msgName4neg.end())
+		neg = it->second;
 	lock0.unlock();
-	shared_ptr<XmsgNeUsrAp> g = nullptr;
+	if (!neg.empty()) 
+		return this->get(neg); 
+	shared_ptr<XmsgNeUsrAp> nu = nullptr;
 	unique_lock<mutex> lock1(this->lock4nes);
 	for (auto& it : this->nes)
 	{
-		shared_ptr<XmsgNeUsrAp> ga = static_pointer_cast<XmsgNeUsrAp>(it.second);
-		if (msg.find(ga->prefix) == 0)
-		{
-			g = ga;
-			break;
-		}
+		shared_ptr<XmsgNeUsrAp> n = static_pointer_cast<XmsgNeUsrAp>(it.second);
+		if (msg.find(n->prefix) != 0)
+			continue;
+		nu = n;
+		break;
 	}
 	lock1.unlock();
-	if (g == nullptr)
+	if (nu == nullptr)
 		return nullptr;
-	unique_lock<mutex> lock2(XmsgNeUsrMgrAp::lock4prefix);
-	XmsgNeUsrMgrAp::prefixGroup[msg] = g;
-	return g;
+	unique_lock<mutex> lock2(XmsgNeUsrMgrAp::lock4msgName4neg);
+	XmsgNeUsrMgrAp::msgName4neg[msg] = nu->neg;
+	return nu;
 }
 
 XmsgNeUsrMgrAp::~XmsgNeUsrMgrAp()
